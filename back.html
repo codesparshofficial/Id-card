@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dynamic ID Card Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            background-color: #f0f0f0;
+        }
+        .form-container, .id-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+        .form-container input, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            font-size: 14px;
+        }
+        .id-card {
+            width: 600px;
+            height: 340px;
+            background: linear-gradient(to bottom, #dce7ff, #ffffff);
+            position: relative;
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            justify-content: space-between;
+        }
+ .details {
+            font-size: 14px;
+            font-weight: bold;
+            color: #002f6c;
+            text-align: left;
+            display: grid;
+            gap: 8px;
+            line-height: 0.6;
+            max-height: 250px; /* Ensures footer visibility */
+            overflow-y: auto; /* Enables scrolling if content exceeds space */
+ }
+        .footer-box {
+            background: #003366;
+            color: #fff;
+            font-size: 14px;
+            padding: 6px;
+            border-radius: 5px;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            line-height: 1.2;
+        }
+        .footer-box a {
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Form for entering details -->
+    <div class="form-container">
+        <h2>Fill ID Card Details</h2>
+        <input type="text" id="joiningDate" placeholder="Date of Joining (DD/MM/YYYY)">
+        <input type="text" id="issueDate" placeholder="Date of Issue (DD/MM/YYYY)">
+        <input type="text" id="validity" placeholder="Valid Up To (e.g., Till Transfer)">
+        <input type="email" id="email" placeholder="Personal Email">
+        <input type="text" id="officialAddress" placeholder="Official Address">
+        <input type="text" id="permanentAddress" placeholder="Permanent Address">
+        <button onclick="generateID()">Generate ID Card</button>
+    </div>
+
+    <!-- ID Card Preview -->
+    <div class="id-card" id="idCard">
+        <div class="details">
+            <p><strong>Date of Joining:</strong> <span id="displayJoiningDate"></span></p>
+            <p><strong>Date of Issue:</strong> <span id="displayIssueDate"></span></p>
+            <p><strong>Valid up to:</strong> <span id="displayValidity"></span></p>
+            <p><strong>E-Mail Id (Personal):</strong> <span id="displayEmail"></span></p>
+            <p><strong>Official Address:</strong> <span id="displayOfficialAddress"></span></p>
+            <p><strong>Permanent Address:</strong> <span id="displayPermanentAddress"></span></p>
+        </div>
+
+        <div class="footer-box">
+            This I-Card is issued to the person concerned by JNV SIDDHARTHNAGAR, U.P. <br>
+            If found, kindly return to us immediately. <br>
+            https://navodaya.gov.in/nvs/nvs-school/SIDDHARTHNAGAR/en/home
+        </div>
+    </div>
+
+    <!-- Download Button -->
+    <button id="downloadBtn" onclick="downloadID()" style="display:none;">Download ID Card</button>
+
+    <script>
+        function generateID() {
+            // Fetching values from input fields
+            document.getElementById("displayJoiningDate").innerText = document.getElementById("joiningDate").value;
+            document.getElementById("displayIssueDate").innerText = document.getElementById("issueDate").value;
+            document.getElementById("displayValidity").innerText = document.getElementById("validity").value;
+            document.getElementById("displayEmail").innerText = document.getElementById("email").value;
+            document.getElementById("displayOfficialAddress").innerText = document.getElementById("officialAddress").value;
+            document.getElementById("displayPermanentAddress").innerText = document.getElementById("permanentAddress").value;
+            
+            // Show the ID Card
+            document.getElementById("idCard").style.display = "flex";
+            document.getElementById("downloadBtn").style.display = "block";
+        }
+
+        function downloadID() {
+            let idCard = document.getElementById("idCard");
+
+            html2canvas(idCard, { scale: 2 }).then(canvas => {
+                let link = document.createElement("a");
+                link.href = canvas.toDataURL("image/png");
+                link.download = "ID_Card.png";
+                link.click();
+            });
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ID Card Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f0f0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .form-container {
+      width: 300px;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .form-container input {
+      width: 100%;
+      margin: 5px 0;
+      padding: 8px;
+      font-size: 14px;
+    }
+    .id-card {
+      width: 550px;
+      height: 320px;
+      background: linear-gradient(to bottom, #dce7ff, #ffffff);
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      font-family: Arial, sans-serif;
+      display: none;
+      position: relative;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #000;
+      padding-bottom: 3px;
+    }
+    .header .logo {
+      width: 60px;
+      height: 60px;
+    }
+    .header h1 {
+      font-size: 22px;
+      color: #002f6c;
+      margin: 0;
+      text-align: center;
+      flex-grow: 1;
+    }
+    .header h2 {
+      font-size: 15px;
+      margin: 0;
+      text-align: center;
+    }
+    .id-content {
+      display: flex;
+      margin-top: 8px;
+    }
+    .details {
+      flex: 2;
+      font-size: 18px;
+      color: #002f6c;
+      line-height: 1;
+      text-align: left;
+    }
+    .details p {
+      margin: 3px 0;
+      display: flex;
+    }
+    .details strong {
+      width: 140px;
+      display: inline-block;
+      color: #002f6c;
+    }
+    .photo {
+      flex: 1;
+      text-align: right;
+    }
+    .photo img {
+      width: 130px;
+      height: 160px;
+      border: 3px solid #002f6c;
+      border-radius: 5px;
+    }
+    .signature {
+      margin-top: 1px;
+      margin-bottom: 40px;
+      text-align: left;
+      font-size: 14px;
+      color: #002f6c;
+      display: flex;
+      justify-content: space-between;
+    }
+    .footer {
+      text-align: center;
+      font-size: 14px;
+      background: #002f6c;
+      color: #fff;
+      padding: 4px;
+      border-radius: 0px;
+      margin-top: 5px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Enter Details</h2>
+    <input type="text" id="cardNumber" placeholder="Card No.">
+    <input type="text" id="name" placeholder="Name">
+    <input type="text" id="dob" placeholder="Date of Birth (DD-MM-YYYY)">
+    <input type="text" id="father" placeholder="Father's Name">
+    <input type="text" id="designation" placeholder="Designation">
+    <input type="text" id="empCode" placeholder="Employee Code">
+    <input type="text" id="phone" placeholder="Phone No.">
+    <input type="text" id="blood" placeholder="Blood Group">
+    <input type="file" id="photoUpload" accept="image/*">
+    <button onclick="generateID()">Generate ID Card</button>
+  </div>
+
+  <div id="idCard" class="id-card">
+    <div class="header">
+      <!-- Left Logo -->
+      <img src="https://codesparshofficial.github.io/Print420/img13.png" alt="Logo Left" class="logo" crossOrigin="anonymous">
+      <div>
+        <h1>Government of India</h1>
+        <h2>(Ministry of Education)</h2>
+        <h1>Navodaya Vidyalaya Samiti</h1>
+      </div>
+      <!-- Right Logo -->
+      <img src="https://codesparshofficial.github.io/Print420/img14.png" alt="Logo Right" class="logo" crossOrigin="anonymous">
+    </div>
+
+    <div class="id-content">
+      <div class="details">
+        <p><strong>Card No.</strong><span id="cardCardNumber"></span></p>
+        <p><strong>Name</strong><span id="cardName"></span></p>
+        <p><strong>Date of Birth</strong><span id="cardDob"></span></p>
+        <p><strong>Father’s Name</strong><span id="cardFather"></span></p>
+        <p><strong>Designation</strong><span id="cardDesignation"></span></p>
+        <p><strong>Employee Code</strong><span id="cardEmpCode"></span></p>
+        <p><strong>Phone No.</strong><span id="cardPhone"></span></p>
+        <p><strong>Blood Group</strong><span id="cardBlood"></span></p>
+      </div>
+      <div class="photo">
+        <img src="https://via.placeholder.com/130x160" id="cardPhoto" alt="Employee Photo" crossOrigin="anonymous">
+      </div>
+    </div>
+
+    <div class="signature">
+      <p><strong>Signature of Employee</strong></p>
+      <p><strong>Principal</strong></p>
+    </div>
+
+    <div class="footer">
+      PM SHRI SCHOOL JAWAHAR NAVODAYA VIDYALAYA, BASANTPUR, BANSI, SIDDHARTHNAGAR, PIN - 272153
+    </div>
+  </div>
+
+  <button id="downloadBtn" onclick="downloadID()" style="display:none;">Download ID Card</button>
+
+<script>
+  function generateID() {
+    document.getElementById("cardCardNumber").innerText = document.getElementById("cardNumber").value;
+    document.getElementById("cardName").innerText = document.getElementById("name").value;
+    document.getElementById("cardDob").innerText = document.getElementById("dob").value;
+    document.getElementById("cardFather").innerText = document.getElementById("father").value;
+    document.getElementById("cardDesignation").innerText = document.getElementById("designation").value;
+    document.getElementById("cardEmpCode").innerText = document.getElementById("empCode").value;
+    document.getElementById("cardPhone").innerText = document.getElementById("phone").value;
+    document.getElementById("cardBlood").innerText = document.getElementById("blood").value;
+    
+    let photoInput = document.getElementById("photoUpload");
+    if (photoInput.files.length > 0) {
+      let reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById("cardPhoto").src = e.target.result;
+      };
+      reader.readAsDataURL(photoInput.files[0]);
+    }
+    
+    document.getElementById("idCard").style.display = "block";
+    document.getElementById("downloadBtn").style.display = "block";
+  }
+  
+  function downloadID() {
+    html2canvas(document.getElementById("idCard"), { useCORS: true, scale: 2 }).then(canvas => {
+      let link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = 'ID_Card.png';
+      link.click();
+    });
+  }
+</script>
+</body>
+</html>
